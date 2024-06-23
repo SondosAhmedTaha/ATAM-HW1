@@ -3,6 +3,7 @@
 .section .text
 _start:
 	test length, length
+  	jz Not_Legal_HW1 
 	js Not_Legal_HW1
 	test Index, Index
 	js Not_Legal_HW1
