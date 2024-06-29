@@ -1,22 +1,27 @@
 .section .text
 .global _start
 _start:
-    test length, length
+    # Check if length is zero or negative
+    testq length, length
     jz Not_Legal_HW1 
     js Not_Legal_HW1
-    test Index, Index
+
+    # Check if Index is negative
+    testq Index, Index
     js Not_Legal_HW1
 
+    # Check high 32 bits of length
     movq length, %rbx   
     shrq $32, %rbx        
-    test %ebx, %ebx      
+    testl %ebx, %ebx      
     jne Not_Legal_HW1   
-  
+
+    # Check high 32 bits of Index
     movq Index, %rbx   
     shrq $32, %rbx        
-    test %ebx, %ebx      
-    jne Not_Legal_HW1
-   
+    testl %ebx, %ebx      
+    jne Not_Legal_HW1   
+
     # Check if Index < length
     movq length, %rbx
     cmpq %rbx, Index
@@ -24,12 +29,8 @@ _start:
 
     # Check if Address is non-null
     movq Address, %rbx
-    test %rbx, %rbx
+    testq %rbx, %rbx
     jz Not_Legal_HW1
-
-    # Check alignment (optional, if required)
-    # test $0x3, %rbx    # Check for 4-byte alignment, for example
-    # jnz Not_Legal_HW1
 
     # Access array and set num
     movl Index, %ecx
