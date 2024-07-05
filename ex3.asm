@@ -5,7 +5,6 @@ _start:
     movq root(%rip), %rdi          # מצביע לשורש של העץ
     xor %rax, %rax           # איפוס מונה הצמתים
     xor %rcx, %rcx           # איפוס מונה העלים
-    xor %rdx, %rdx           # איפוס מונה העומק
 
 traverse_tree_HW1:
     inc %rax
