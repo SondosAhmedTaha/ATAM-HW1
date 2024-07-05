@@ -34,6 +34,24 @@ _start:
     testq %rbx, %rbx
     jz Not_Legal_HW1
 
+    # Check if Address is a positive value
+    testq %rbx, %rbx
+    js Not_Legal_HW1
+
+    # Check if Address is 8-byte aligned
+    testq $7, %rbx
+    jnz Not_Legal_HW1
+
+    # Check if accessing Address[Index] is within bounds (Address + Index*4 < Address + length*4)
+    movq length, %rax
+    shlq $2, %rax         # length * 4
+    addq Adress, %rax     # Address + length * 4
+    movq Index, %rcx
+    shlq $2, %rcx         # Index * 4
+    addq Adress, %rcx     # Address + Index * 4
+    cmpq %rax, %rcx
+    jae Not_Legal_HW1
+
     # Access array and set num
     movl Index, %ecx
     movl (%rbx,%rcx,4), %eax  
