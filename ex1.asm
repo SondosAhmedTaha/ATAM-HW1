@@ -39,9 +39,7 @@ _start:
     testq %rbx, %rbx
     js Not_Legal_HW1
 
-    # Check if Address is 8-byte aligned
-    testq $7, %rbx
-    jnz Not_Legal_HW1
+ 
 
     # Check if accessing Address[Index] is within bounds (Address + Index*4 < Address + length*4)
     movq length, %rax
@@ -57,10 +55,10 @@ _start:
     movl Index, %ecx
     movl (%rbx,%rcx,4), %eax  
     movl %eax, num
-    movb $1, Legal
+    movb $1, legal
     jmp End_HW1
 
 Not_Legal_HW1:
-    movb $0, Legal
+    movb $0, legal
 
 End_HW1:
