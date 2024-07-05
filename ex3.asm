@@ -1,6 +1,6 @@
-.section .text
 .global _start
 
+.section .text
 _start:
     movq root(%rip), %rdi          # מצביע לשורש של העץ
     xor %rax, %rax           # איפוס מונה הצמתים
