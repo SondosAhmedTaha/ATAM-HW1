@@ -55,10 +55,10 @@ _start:
     movl Index, %ecx
     movl (%rbx,%rcx,4), %eax  
     movl %eax, num
-    movb $1, legal
+    movb $1, Legal
     jmp End_HW1
 
 Not_Legal_HW1:
-    movb $0, legal
+    movb $0, Legal
 
 End_HW1:
