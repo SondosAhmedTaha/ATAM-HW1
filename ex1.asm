@@ -1,5 +1,6 @@
-.section .text
 .global _start
+
+.section .text
 _start:
     # Check if length is zero or negative
     movq length, %rax
