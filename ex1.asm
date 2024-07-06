@@ -2,14 +2,14 @@
 .globl _start
 
 _start:
-    xor %rax, %rax       # Counter for nodes
-    xor %rcx, %rcx       # Counter for leaves
+    xor %rax, %rax       # Clear rax (node counter)
+    xor %rcx, %rcx       # Clear rcx (leaf counter)
 
-    mov root(%rip), %rdi # Load the root node
+    lea root(%rip), %rdi # Load the address of the root node
 
 level1:
     inc %rax             # Increment node counter
-    movq 0(%rdi), %rsi   # Load left child of the current node into %rsi
+    movq 0(%rdi), %rsi   # Load left child of current node into rsi
     testq %rsi, %rsi     # Check if left child is null
     je check_leaf1       # If null, check if it's a leaf
     jmp level2           # If not null, go to level2
@@ -20,91 +20,86 @@ check_leaf1:
 
 next_sibling1:
     add $8, %rdi         # Move to right sibling (current level)
-    movq 0(%rdi), %rdi   # Load right sibling into %rdi
-    testq %rdi, %rdi     # Check if right sibling is null
+    testq (%rdi), %rdi   # Check if right sibling is null
     jne level1           # If not null, continue to level1
     jmp traverse_complete # If null, traverse is complete
 
 level2:
     inc %rax             # Increment node counter
-    movq 8(%rdi), %r8    # Load right sibling into %r8
-    testq %r8, %r8       # Check if right sibling is null
+    movq 0(%rsi), %r8    # Load left child of current node into r8
+    testq %r8, %r8       # Check if left child is null
     je check_leaf2       # If null, check if it's a leaf
-
     jmp level3           # If not null, go to level3
 
 check_leaf2:
     inc %rcx             # Increment leaf counter
-    jmp next_sibling1    # Go to next sibling
+    jmp next_sibling2    # Go to next sibling
 
 next_sibling2:
-    add $8, %r8          # Move to right sibling (current level)
-    movq 0(%r8), %r8     # Load right sibling
-    testq %r8, %r8       # Check if right sibling is null
+    add $8, %rsi         # Move to right sibling (current level)
+    testq (%rsi), %rsi   # Check if right sibling is null
+    movq 0(%rsi), %r8    # Load next node into r8
     jne level3           # If not null, continue to level3
-    jmp next_sibling1    # If null, go to next sibling level2
+    jmp next_sibling1    # If null, go to next sibling level1
 
 level3:
     inc %rax             # Increment node counter
-    movq 8(%r8), %r9     # Load right sibling
-    testq %r9, %r9       # Check if right sibling is null
+    movq 0(%r8), %r9     # Load left child of current node into r9
+    testq %r9, %r9       # Check if left child is null
     je check_leaf3       # If null, check if it's a leaf
-
     jmp level4           # If not null, go to level4
 
 check_leaf3:
     inc %rcx             # Increment leaf counter
-    jmp next_sibling2    # Go to next sibling
+    jmp next_sibling3    # Go to next sibling
 
 next_sibling3:
-    add $8, %r9          # Move to right sibling (current level)
-    movq 0(%r9), %r9     # Load right sibling
-    testq %r9, %r9       # Check if right sibling is null
+    add $8, %r8          # Move to right sibling (current level)
+    movq 0(%r8), %r9     # Load next node into r9
+    testq (%r8), %r8     # Check if right sibling is null
     jne level4           # If not null, continue to level4
-    jmp next_sibling2    # If null, go to next sibling level3
+    jmp next_sibling2    # If null, go to next sibling level2
 
 level4:
     inc %rax             # Increment node counter
-    movq 8(%r9), %r10    # Load right sibling
-    testq %r10, %r10     # Check if right sibling is null
+    movq 0(%r9), %r10    # Load left child of current node into r10
+    testq %r10, %r10     # Check if left child is null
     je check_leaf4       # If null, check if it's a leaf
-
     jmp level5           # If not null, go to level5
 
 check_leaf4:
     inc %rcx             # Increment leaf counter
-    jmp next_sibling3    # Go to next sibling
+    jmp next_sibling4    # Go to next sibling
 
 next_sibling4:
-    add $8, %r10         # Move to right sibling (current level)
-    movq 0(%r10), %r10   # Load right sibling
-    testq %r10, %r10     # Check if right sibling is null
+    add $8, %r9          # Move to right sibling (current level)
+    movq 0(%r9), %r10    # Load next node into r10
+    testq (%r9), %r9     # Check if right sibling is null
     jne level5           # If not null, continue to level5
-    jmp next_sibling3    # If null, go to next sibling level4
+    jmp next_sibling3    # If null, go to next sibling level3
 
 level5:
     inc %rax             # Increment node counter
-    movq 8(%r10), %r11   # Load right sibling
-    testq %r11, %r11     # Check if right sibling is null
+    movq 0(%r10), %r11   # Load left child of current node into r11
+    testq %r11, %r11     # Check if left child is null
     je check_leaf5       # If null, check if it's a leaf
-
     jmp level6           # If not null, go to level6
 
 check_leaf5:
     inc %rcx             # Increment leaf counter
-    jmp next_sibling4    # Go to next sibling
+    jmp next_sibling5    # Go to next sibling
 
 next_sibling5:
-    add $8, %r11         # Move to right sibling (current level)
-    movq 0(%r11), %r11   # Load right sibling
-    testq %r11, %r11     # Check if right sibling is null
+    add $8, %r10         # Move to right sibling (current level)
+    movq 0(%r10), %r11   # Load next node into r11
+    testq (%r10), %r10   # Check if right sibling is null
     jne level6           # If not null, continue to level6
-    jmp next_sibling4    # If null, go to next sibling level5
+    jmp next_sibling4    # If null, go to next sibling level4
 
 level6:
     inc %rax             # Increment node counter
-    movq 8(%r11), %r12   # Load right sibling
-    testq %r12, %r12     # Check if right sibling is null
+    movq 0(%r11), %r12   # Load left child of current node into r12
+    testq %r12, %r12     # Check if left child is null
     je check_leaf6       # If null, check if it's a leaf
 
     inc %rax             # Increment node counter
@@ -115,6 +110,9 @@ check_leaf6:
     jmp next_sibling5    # Go to next sibling
 
 traverse_complete:
+    test %rcx, %rcx      # Check if there are any leaves
+    jz Not_Rich          # If no leaves, tree is not rich
+
     xor %rdx, %rdx       # Clear rdx for division
     div %rcx             # Divide total nodes by total leaves
     cmp $3, %rax         # Compare the quotient with 3
@@ -123,11 +121,11 @@ traverse_complete:
     jmp Rich             # Else, rich
 
 Not_Rich:
-    movb $0, rich        # Set rich to 0
+    movb $0, rich(%rip)  # Set rich to 0
     jmp End
 
 Rich:
-    movb $1, rich        # Set rich to 1
+    movb $1, rich(%rip)  # Set rich to 1
     jmp End
 
 Equal_Rich:
@@ -136,4 +134,3 @@ Equal_Rich:
     jmp Not_Rich         # Else, not rich
 
 End:
-
