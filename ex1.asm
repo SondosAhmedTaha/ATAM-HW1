@@ -110,7 +110,7 @@ next_sibling1:
     jmp traverse_complete
 
 traverse_complete:
-    mov %rax, %rbx
+    
     xor %rdx, %rdx
     div %rcx
     cmp $3, %rax
