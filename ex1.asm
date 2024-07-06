@@ -82,35 +82,35 @@ check_leaf6:
     jmp next_sibling5    # Go to next sibling
 
 next_sibling5:
-    add $16, %r11        # Move to right sibling (next level)
+    add $8, %r11        # Move to right sibling (next level)
     movq 0(%r11), %r12   # Load right sibling
     testq %r12, %r12     # Check if right sibling is null
     jne level6           # If not null, continue to level6
     jmp traverse_complete # If null, traverse is complete
 
 next_sibling4:
-    add $16, %r10        # Move to right sibling (current level)
+    add $8, %r10        # Move to right sibling (current level)
     movq 0(%r10), %r11   # Load right sibling
     testq %r11, %r11     # Check if right sibling is null
     jne level5           # If not null, continue to level5
     jmp next_sibling3    # If null, go to next sibling level4
 
 next_sibling3:
-    add $16, %r9         # Move to right sibling (current level)
+    add $8, %r9         # Move to right sibling (current level)
     movq 0(%r9), %r10    # Load right sibling
     testq %r10, %r10     # Check if right sibling is null
     jne level4           # If not null, continue to level4
     jmp next_sibling2    # If null, go to next sibling level3
 
 next_sibling2:
-    add $16, %r8         # Move to right sibling (current level)
+    add $8, %r8         # Move to right sibling (current level)
     movq 0(%r8), %r9     # Load right sibling
     testq %r9, %r9       # Check if right sibling is null
     jne level3           # If not null, continue to level3
     jmp next_sibling1    # If null, go to next sibling level2
 
 next_sibling1:
-    add $16, %rdi        # Move to right sibling (current level)
+    add $8, %rdi        # Move to right sibling (current level)
     movq 0(%rdi), %rsi   # Load right sibling
     testq %rsi, %rsi     # Check if right sibling is null
     jz traverse_complete # If null, traverse is complete
