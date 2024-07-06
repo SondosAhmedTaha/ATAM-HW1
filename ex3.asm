@@ -1,192 +1,127 @@
-.global _start
-
 .section .text
+.globl _start
+
 _start:
+    xor %rax, %rax       # Clear rax (node counter)
+    xor %rcx, %rcx       # Clear rcx (leaf counter)
 
-    xor %rax, %rax
-    xor %rcx, %rcx
+    lea root(%rip), %rdi # Load the address of the root node
 
-    mov root(%rip), %rdi
-    test %rdi, %rdi
-    jz traverse_complete
-
-level1:
-    inc %rax
-    movq 0(%rdi), %rsi
-    test %rsi, %rsi
-    je check_leaf1
-
-level2:
-    inc %rax
-    movq 0(%rsi), %r8
-    test %r8, %r8
-    je check_leaf2
-
-level3:
-    inc %rax
-    movq 0(%r8), %r9
-    test %r9, %r9
-    je check_leaf3
-
-level4:
-    inc %rax
-    movq 0(%r9), %r10
-    test %r10, %r10
-    je check_leaf4
-
-level5:
-    inc %rax
-    movq 0(%r10), %r11
-    test %r11, %r11
-    je check_leaf5
-
-level6:
-    inc %rax
-    movq 0(%r11), %r12
-    test %r12, %r12
-    je check_leaf6
-
-    inc %rax
-    jmp next_sibling6
-
-check_leaf6:
-    inc %rcx
-
-next_sibling6:
-    add $8, %r11
-    movq 0(%r11), %r12
-    …
-[1:52 pm, 06/07/2024] 𝑺𝑶𝑵𝑫𝑶𝑺 𝑻𝑨𝑯𝑨❦: .global _start
-
-.section .text
-_start:
-
-    xor %rax, %rax
-    xor %rcx, %rcx
-
-    mov root(%rip), %rdi
-    test %rdi, %rdi
-    jz traverse_complete
-
-level1:
-    inc %rax
-    movq 0(%rdi), %rsi
-    test %rsi, %rsi
-    je check_leaf1
-
-level2:
-    inc %rax
-    movq 0(%rsi), %r8
-    test %r8, %r8
-    je check_leaf2
-
-level3:
-    inc %rax
-    movq 0(%r8), %r9
-    test %r9, %r9
-    je check_leaf3
-
-level4:
-    inc %rax
-    movq 0(%r9), %r10
-    test %r10, %r10
-    je check_leaf4
-
-level5:
-    inc %rax
-    movq 0(%r10), %r11
-    test %r11, %r11
-    je check_leaf5
-
-level6:
-    inc %rax
-    movq 0(%r11), %r12
-    test %r12, %r12
-    je check_leaf6
-
-    inc %rax
-    jmp next_sibling6
-
-check_leaf6:
-    inc %rcx
-
-next_sibling6:
-    add $8, %r11
-    movq 0(%r11), %r12
-    test %r12, %r12
-    jnz level6
-    jmp next_sibling5
-
-check_leaf5:
-    inc %rcx
-
-next_sibling5:
-    add $8, %r10
-    movq 0(%r10), %r11
-    test %r11, %r11
-    jnz level5
-    jmp next_sibling4
-
-check_leaf4:
-    inc %rcx
-
-next_sibling4:
-    add $8, %r9
-    movq 0(%r9), %r10
-    test %r10, %r10
-    jnz level4
-    jmp next_sibling3
-
-check_leaf3:
-    inc %rcx
-
-next_sibling3:
-    add $8, %r8
-    movq 0(%r8), %r9
-    test %r9, %r9
-    jnz level3
-    jmp next_sibling2
-
-check_leaf2:
-    inc %rcx
-
-next_sibling2:
-    add $8, %rsi
-    movq 0(%rsi), %r8
-    test %r8, %r8
-    jnz level2
-    jmp next_sibling1
-
-check_leaf1:
-    inc %rcx
-
-next_sibling1:
-    add $8, %rdi
-    movq 0(%rdi), %rsi
-    test %rsi, %rsi
-    jnz level1
+    # Level 1
+    addq $1, %rax
+    cmpq $0, (%r10)
+    jne level1_loop
+    addq $1, %rcx
     jmp traverse_complete
 
+level1_loop:
+    movq (%r10), %r11
+    cmpq $0, %r11
+    je check_leaf1
+    addq $1, %rax
+
+level2_loop:
+    movq (%r11), %r12
+    cmpq $0, %r12
+    je check_leaf2
+    addq $1, %rax
+
+level3_loop:
+    movq (%r12), %r13
+    cmpq $0, %r13
+    je check_leaf3
+    addq $1, %rax
+
+level4_loop:
+    movq (%r13), %r14
+    cmpq $0, %r14
+    je check_leaf4
+    addq $1, %rax
+
+level5_loop:
+    movq (%r14), %r15
+    cmpq $0, %r15
+    je check_leaf5
+    addq $1, %rax
+
+level6:
+    addq $1, %rax
+    addq $1, %rcx
+    addq $8, %r15
+
+level5_next:
+    addq $8, %r14
+    jmp level5_loop
+
+level4_next:
+    addq $8, %r13
+    jmp level4_loop
+
+level3_next:
+    addq $8, %r12
+    jmp level3_loop
+
+level2_next:
+    addq $8, %r11
+    jmp level2_loop
+
+level1_next:
+    addq $8, %r10
+    jmp level1_loop
+
+check_leaf1:
+    cmpq (root), %r10
+    jne traverse_complete
+    addq $1, %rcx
+    jmp traverse_complete
+
+check_leaf2:
+    cmpq (%r10), %r11
+    jne level1_next
+    addq $1, %rcx
+    jmp level1_next
+
+check_leaf3:
+    cmpq (%r11), %r12
+    jne level2_next
+    addq $1, %rcx
+    jmp level2_next 
+
+check_leaf4:
+    cmpq (%r12), %r13
+    jne level2_next
+    addq $1, %rcx
+    jmp level3_next
+
+check_leaf5:
+    cmpq (%r13), %r14
+    jne level2_next
+    addq $1, %rcx
+    jmp level4_next
+
 traverse_complete:
-    mov %rax, %rbx
-    xor %rdx, %rdx
-    div %rcx
-    cmp $3, %rax
-    jg Not_Rich
-    je Equal_Rich
-    jmp Rich
+    test %rcx, %rcx      # Check if there are any leaves
+    jz Not_Rich          # If no leaves, tree is not rich
+
+    xor %rdx, %rdx       # Clear rdx for division
+    div %rcx             # Divide total nodes by total leaves
+    cmp $3, %rax         # Compare the quotient with 3
+    jg Not_Rich          # If quotient > 3, not rich
+    je Equal_Rich        # If quotient == 3, check remainder
+    jmp Rich             # Else, rich
 
 Not_Rich:
-    movb $0, rich
+    movb $0, rich  # Set rich to 0
     jmp End
 
 Rich:
-    movb $1, rich
+    movb $1, rich  # Set rich to 1
     jmp End
 
 Equal_Rich:
-    cmp $0, %rdx
-    je Rich
-    jmp Not_Rich
+    cmp $0, %rdx         # Check if remainder is 0
+    je Rich              # If 0, rich
+    jmp Not_Rich         # Else, not rich
 
 End:
+
