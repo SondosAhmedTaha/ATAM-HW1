@@ -9,11 +9,13 @@ _start:
 
     # Start traversal from root
     mov $root, %r10
+    cmpq $0, (%r10)
+    je Not_Rich
 level1:
     addq $1, %rax
     cmpq $0, (%r10)
     jne level1_loop
-    addq $1, %racx
+    addq $1, %rcx
     jmp traverse_complete
 
 level1_loop:
@@ -48,7 +50,7 @@ level5_loop:
 
 level6:
     addq $1, %rax
-    addq $1, %racx
+    addq $1, %rcx
     addq $8, %r15
 
 level5_next:
@@ -74,31 +76,31 @@ level1_next:
 check_leaf1:
     cmpq (root), %r10
     jne traverse_complete
-    addq $1, %racx
+    addq $1, %rcx
     jmp traverse_complete
 
 check_leaf2:
     cmpq (%r10), %r11
     jne level1_next
-    addq $1, %racx
+    addq $1, %rcx
     jmp level1_next
 
 check_leaf3:
     cmpq (%r11), %r12
     jne level2_next
-    addq $1, %racx
+    addq $1, %rcx
     jmp level2_next 
 
 check_leaf4:
     cmpq (%r12), %r13
     jne level2_next
-    addq $1, %racx
+    addq $1, %rcx
     jmp level3_next
 
 check_leaf5:
     cmpq (%r13), %r14
     jne level2_next
-    addq $1, %racx
+    addq $1, %rcx
     jmp level4_next
 
 traverse_complete:
@@ -126,6 +128,3 @@ Equal_Rich:
     jmp Not_Rich         # Else, not rich
 
 End:
-
-
-
