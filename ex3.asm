@@ -6,13 +6,14 @@ _start:
     xor %rax, %rax       # Clear rax (node counter)
     xor %rcx, %rcx       # Clear rcx (leaf counter)
 
-    lea root(%rip), %rdi # Load the address of the root node
 
-    # Level 1
+    # Start traversal from root
+    mov $root, %r10
+level1:
     addq $1, %rax
     cmpq $0, (%r10)
     jne level1_loop
-    addq $1, %rcx
+    addq $1, %racx
     jmp traverse_complete
 
 level1_loop:
@@ -47,7 +48,7 @@ level5_loop:
 
 level6:
     addq $1, %rax
-    addq $1, %rcx
+    addq $1, %racx
     addq $8, %r15
 
 level5_next:
@@ -73,31 +74,31 @@ level1_next:
 check_leaf1:
     cmpq (root), %r10
     jne traverse_complete
-    addq $1, %rcx
+    addq $1, %racx
     jmp traverse_complete
 
 check_leaf2:
     cmpq (%r10), %r11
     jne level1_next
-    addq $1, %rcx
+    addq $1, %racx
     jmp level1_next
 
 check_leaf3:
     cmpq (%r11), %r12
     jne level2_next
-    addq $1, %rcx
+    addq $1, %racx
     jmp level2_next 
 
 check_leaf4:
     cmpq (%r12), %r13
     jne level2_next
-    addq $1, %rcx
+    addq $1, %racx
     jmp level3_next
 
 check_leaf5:
     cmpq (%r13), %r14
     jne level2_next
-    addq $1, %rcx
+    addq $1, %racx
     jmp level4_next
 
 traverse_complete:
@@ -125,4 +126,6 @@ Equal_Rich:
     jmp Not_Rich         # Else, not rich
 
 End:
+
+
 
