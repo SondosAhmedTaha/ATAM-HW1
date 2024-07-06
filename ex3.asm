@@ -3,8 +3,8 @@
 .section .text
 _start:
 #your code here
-    xor %rax, %rax  //vertec counter    
-    xor %rcx, %rcx  //leaves counter 
+    xor %rax, %rax  #vertec counter    
+    xor %rcx, %rcx  #leaves counter 
 
     movq root(%rip), %rdi
     cmpq $0, (%rdi)
