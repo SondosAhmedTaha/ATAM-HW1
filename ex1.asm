@@ -105,8 +105,8 @@ next_sibling1:
     add $8, %rdi         # Move to right sibling
     movq 0(%rdi), %rsi   # Load right sibling
     testq %rsi, %rsi      # Check if right sibling is null
-    jnz level1           # If not null, continue to level1
-    jmp traverse_complete # If null, traverse is complete
+    jne traverse_complete           # If not null, continue to level1
+    jmp level1  # If null, traverse is complete
 
 traverse_complete:
     xor %rdx, %rdx       # Clear rdx for division
