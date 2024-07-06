@@ -12,90 +12,90 @@ _start:
 hight1_HW1:
     addq $1, %rax
     cmpq $0, (%rdi)
-    jne hight1_loop
+    jne loop1_HW1
     addq $1, %rcx
     jmp Scan_Done_HW1
 
-hight1_loop:
+loop1_HW1:
     movq (%rdi), %r8
     cmpq $0, %r8
-    je Is_leaf1
+    je Is_leaf1_HW1
     addq $1, %rax
-hight1_next:
+sibling1_HW1:
     addq $8, %rdi
-    jmp hight1_loop
+    jmp loop1_HW1
 
-Is_leaf1:
+Is_leaf1_HW1:
     cmpq (root), %rdi
     jne Scan_Done_HW1
     addq $1, %rcx
     jmp Scan_Done_HW1
 
-hight2_loop:
+loop2_HW1:
     movq (%r8), %r9
     cmpq $0, %r9
-    je Is_leaf2
+    je Is_leaf2_HW1
     addq $1, %rax
-hight2_next:
+sibling2_HW1:
     addq $8, %r8
-    jmp hight2_loop
+    jmp loop2_HW1
 
-Is_leaf2:
+Is_leaf2_HW1:
     cmpq (%rdi), %r8
-    jne hight1_next
+    jne sibling1_HW1
     addq $1, %rcx
-    jmp hight1_next
+    jmp sibling1_HW1
 
 
-hight3_loop:
+loop3_HW1:
     movq (%r9), %r11
     cmpq $0, %r11
-    je Is_leaf3
+    je Is_leaf3_HW1
     addq $1, %rax
 
-hight3_next:
+sibling3_HW1:
     addq $8, %r9
-    jmp hight3_loop
+    jmp loop3_HW1
 
-Is_leaf3:
+Is_leaf3_HW1:
     cmpq (%r8), %r9
-    jne hight2_next
+    jne sibling2_HW1
     addq $1, %rcx
-    jmp hight2_next 
+    jmp sibling2_HW1 
 
-hight4_loop:
+loop4_HW1:
     movq (%r11), %r10
     cmpq $0, %r10
-    je Is_leaf4
+    je Is_leaf4_HW1
     addq $1, %rax
 
-hight4_next:
+sibling4_HW1:
     addq $8, %r11
-    jmp hight4_loop
+    jmp loop4_HW1
 
-Is_leaf4:
+Is_leaf4_HW1:
     cmpq (%r9), %r11
-    jne hight2_next
+    jne sibling2_HW1
     addq $1, %rcx
-    jmp hight3_next
+    jmp sibling3_HW1
 
-hight5_loop:
+loop5_HW1:
     movq (%r10), %r12
     cmpq $0, %r12
-    je Is_leaf5
+    je Is_leaf5_HW1
     addq $1, %rax
 
-hight5_next:
+sibling5_HW1:
     addq $8, %r10
-    jmp hight5_loop
+    jmp loop5_HW1
 
-Is_leaf5:
+Is_leaf5_HW1:
     cmpq (%r11), %r10
-    jne hight2_next
+    jne sibling2_HW1
     addq $1, %rcx
-    jmp hight4_next
+    jmp sibling4_HW1
 
-hight6:
+hight6_HW1:
     addq $1, %rax
     addq $1, %rcx
     addq $8, %r12
