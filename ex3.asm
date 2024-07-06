@@ -1,4 +1,4 @@
-[1:49 pm, 06/07/2024] 𝑺𝑶𝑵𝑫𝑶𝑺 𝑻𝑨𝑯𝑨❦: .global _start
+.global _start
 
 .section .text
 _start:
