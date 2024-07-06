@@ -1,7 +1,8 @@
-.section .text
-.globl _start
+.global _start
 
+.section .text
 _start:
+#your code here
     xor %rax, %rax       # Clear rax (node counter)
     xor %rcx, %rcx       # Clear rcx (leaf counter)
 
