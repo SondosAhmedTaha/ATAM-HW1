@@ -124,4 +124,4 @@ Equal_Rich_HW1:
     je Rich_HW1              # If 0, rich
     jmp Not_Rich_HW1         # Else, not rich
 
-End_HW1_:
+End_HW1:
