@@ -1,64 +1,192 @@
-.global _start
+[1:49 pm, 06/07/2024] 𝑺𝑶𝑵𝑫𝑶𝑺 𝑻𝑨𝑯𝑨❦: .global _start
 
 .section .text
 _start:
-    # Check if length is zero or negative
-    movq length, %rax
-    testq %rax, %rax
-    jz Not_Legal_HW1 
-    js Not_Legal_HW1
 
-    # Check if Index is negative
-    movq Index, %rax
-    testq %rax, %rax
-    js Not_Legal_HW1
+    xor %rax, %rax
+    xor %rcx, %rcx
 
-    # Check high 32 bits of length
-    movq length, %rbx   
-    shrq $32, %rbx        
-    testl %ebx, %ebx      
-    jne Not_Legal_HW1   
+    mov root(%rip), %rdi
+    test %rdi, %rdi
+    jz traverse_complete
 
-    # Check high 32 bits of Index
-    movq Index, %rbx   
-    shrq $32, %rbx        
-    testl %ebx, %ebx      
-    jne Not_Legal_HW1   
+level1:
+    inc %rax
+    movq 0(%rdi), %rsi
+    test %rsi, %rsi
+    je check_leaf1
 
-    # Check if Index < length
-    movq length, %rbx
-    cmpq %rbx, Index
-    jae Not_Legal_HW1
+level2:
+    inc %rax
+    movq 0(%rsi), %r8
+    test %r8, %r8
+    je check_leaf2
 
-    # Check if Address is non-null
-    movq Adress, %rbx
-    testq %rbx, %rbx
-    jz Not_Legal_HW1
+level3:
+    inc %rax
+    movq 0(%r8), %r9
+    test %r9, %r9
+    je check_leaf3
 
-    # Check if Address is a positive value
-    testq %rbx, %rbx
-    js Not_Legal_HW1
+level4:
+    inc %rax
+    movq 0(%r9), %r10
+    test %r10, %r10
+    je check_leaf4
 
- 
+level5:
+    inc %rax
+    movq 0(%r10), %r11
+    test %r11, %r11
+    je check_leaf5
 
-    # Check if accessing Address[Index] is within bounds (Address + Index*4 < Address + length*4)
-    movq length, %rax
-    shlq $2, %rax         # length * 4
-    addq Adress, %rax     # Address + length * 4
-    movq Index, %rcx
-    shlq $2, %rcx         # Index * 4
-    addq Adress, %rcx     # Address + Index * 4
-    cmpq %rax, %rcx
-    jae Not_Legal_HW1
+level6:
+    inc %rax
+    movq 0(%r11), %r12
+    test %r12, %r12
+    je check_leaf6
 
-    # Access array and set num
-    movl Index, %ecx
-    movl (%rbx,%rcx,4), %eax  
-    movl %eax, num
-    movb $1, Legal
-    jmp End_HW1
+    inc %rax
+    jmp next_sibling6
 
-Not_Legal_HW1:
-    movb $0, Legal
+check_leaf6:
+    inc %rcx
 
-End_HW1:
+next_sibling6:
+    add $8, %r11
+    movq 0(%r11), %r12
+    …
+[1:52 pm, 06/07/2024] 𝑺𝑶𝑵𝑫𝑶𝑺 𝑻𝑨𝑯𝑨❦: .global _start
+
+.section .text
+_start:
+
+    xor %rax, %rax
+    xor %rcx, %rcx
+
+    mov root(%rip), %rdi
+    test %rdi, %rdi
+    jz traverse_complete
+
+level1:
+    inc %rax
+    movq 0(%rdi), %rsi
+    test %rsi, %rsi
+    je check_leaf1
+
+level2:
+    inc %rax
+    movq 0(%rsi), %r8
+    test %r8, %r8
+    je check_leaf2
+
+level3:
+    inc %rax
+    movq 0(%r8), %r9
+    test %r9, %r9
+    je check_leaf3
+
+level4:
+    inc %rax
+    movq 0(%r9), %r10
+    test %r10, %r10
+    je check_leaf4
+
+level5:
+    inc %rax
+    movq 0(%r10), %r11
+    test %r11, %r11
+    je check_leaf5
+
+level6:
+    inc %rax
+    movq 0(%r11), %r12
+    test %r12, %r12
+    je check_leaf6
+
+    inc %rax
+    jmp next_sibling6
+
+check_leaf6:
+    inc %rcx
+
+next_sibling6:
+    add $8, %r11
+    movq 0(%r11), %r12
+    test %r12, %r12
+    jnz level6
+    jmp next_sibling5
+
+check_leaf5:
+    inc %rcx
+
+next_sibling5:
+    add $8, %r10
+    movq 0(%r10), %r11
+    test %r11, %r11
+    jnz level5
+    jmp next_sibling4
+
+check_leaf4:
+    inc %rcx
+
+next_sibling4:
+    add $8, %r9
+    movq 0(%r9), %r10
+    test %r10, %r10
+    jnz level4
+    jmp next_sibling3
+
+check_leaf3:
+    inc %rcx
+
+next_sibling3:
+    add $8, %r8
+    movq 0(%r8), %r9
+    test %r9, %r9
+    jnz level3
+    jmp next_sibling2
+
+check_leaf2:
+    inc %rcx
+
+next_sibling2:
+    add $8, %rsi
+    movq 0(%rsi), %r8
+    test %r8, %r8
+    jnz level2
+    jmp next_sibling1
+
+check_leaf1:
+    inc %rcx
+
+next_sibling1:
+    add $8, %rdi
+    movq 0(%rdi), %rsi
+    test %rsi, %rsi
+    jnz level1
+    jmp traverse_complete
+
+traverse_complete:
+    mov %rax, %rbx
+    xor %rdx, %rdx
+    div %rcx
+    cmp $3, %rax
+    jg Not_Rich
+    je Equal_Rich
+    jmp Rich
+
+Not_Rich:
+    movb $0, rich
+    jmp End
+
+Rich:
+    movb $1, rich
+    jmp End
+
+Equal_Rich:
+    cmp $0, %rdx
+    je Rich
+    jmp Not_Rich
+
+End:
