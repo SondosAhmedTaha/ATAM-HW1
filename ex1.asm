@@ -55,64 +55,6 @@ check_leaf6:
 next_sibling6:
     add $8, %r11
     movq 0(%r11), %r12
-    …
-[1:52 pm, 06/07/2024] 𝑺𝑶𝑵𝑫𝑶𝑺 𝑻𝑨𝑯𝑨❦: .global _start
-
-.section .text
-_start:
-
-    xor %rax, %rax
-    xor %rcx, %rcx
-
-    mov root(%rip), %rdi
-    test %rdi, %rdi
-    jz traverse_complete
-
-level1:
-    inc %rax
-    movq 0(%rdi), %rsi
-    test %rsi, %rsi
-    je check_leaf1
-
-level2:
-    inc %rax
-    movq 0(%rsi), %r8
-    test %r8, %r8
-    je check_leaf2
-
-level3:
-    inc %rax
-    movq 0(%r8), %r9
-    test %r9, %r9
-    je check_leaf3
-
-level4:
-    inc %rax
-    movq 0(%r9), %r10
-    test %r10, %r10
-    je check_leaf4
-
-level5:
-    inc %rax
-    movq 0(%r10), %r11
-    test %r11, %r11
-    je check_leaf5
-
-level6:
-    inc %rax
-    movq 0(%r11), %r12
-    test %r12, %r12
-    je check_leaf6
-
-    inc %rax
-    jmp next_sibling6
-
-check_leaf6:
-    inc %rcx
-
-next_sibling6:
-    add $8, %r11
-    movq 0(%r11), %r12
     test %r12, %r12
     jnz level6
     jmp next_sibling5
@@ -168,6 +110,7 @@ next_sibling1:
     jmp traverse_complete
 
 traverse_complete:
+    mov %rax, %rbx
     xor %rdx, %rdx
     div %rcx
     cmp $3, %rax
