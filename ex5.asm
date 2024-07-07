@@ -2,50 +2,50 @@
 .section .text
 _start:
 
-  movl size, %ecx         # Load size of the series into %ecx (32-bit)
-  testl %ecx, %ecx
-  jz Not_seconddegree_HW1 
-  js Not_seconddegree_HW1
-  movq %rcx, %rbx         # Move %rcx to %rbx (64-bit), size is already in %ecx
+movl size, %ecx         # Load size of the series into %ecx (32-bit)
+testl %ecx, %ecx
+jz Not_seconddegree_HW1 
+js Not_seconddegree_HW1
+movq %rcx, %rbx         # Move %rcx to %rbx (64-bit), size is already in %ecx
   
-  movq series(%rip), %rdi # Load address of series into %rdi
-  testq %rdi, %rdi 
-  je Not_seconddegree_HW1
-  movl (%rdi), %eax       # Load first element of series into %eax (32-bit)
+movq series(%rip), %rdi # Load address of series into %rdi
+testq %rdi, %rdi 
+je Not_seconddegree_HW1
+movl (%rdi), %eax       # Load first element of series into %eax (32-bit)
   
-  movq %rax, %rbx         # Move %rax to %rbx (64-bit), first element in %eax
-  shrq $32, %rbx          # Shift %rbx right by 32 bits
+movq %rax, %rbx         # Move %rax to %rbx (64-bit), first element in %eax
+shrq $32, %rbx          # Shift %rbx right by 32 bits
   
-  movl 4(%rdi), %ebx      # Load second element of series into %ebx (32-bit)
+movl 4(%rdi), %ebx      # Load second element of series into %ebx (32-bit)
   
-  movq %rbx, %rdx         # Move %rbx to %rdx (64-bit)
-  shrq $32, %rdx          # Shift %rdx right by 32 bits
+movq %rbx, %rdx         # Move %rbx to %rdx (64-bit)
+shrq $32, %rdx          # Shift %rdx right by 32 bits
   
-  subl %ebx, %eax         # Subtract %ebx from %eax
+subl %ebx, %eax         # Subtract %ebx from %eax
   
-  movl $1, %esi           # flag_arithmetic = 1
-  movl $1, %edi           # flag_geometric = 1
-  movl $1, %r8d           # Set loop counter i = 1
-  movl %eax, %r9d         # Initialize previous_diff with first difference
+movl $1, %esi           # flag_arithmetic = 1
+movl $1, %edi           # flag_geometric = 1
+movl $1, %r8d           # Set loop counter i = 1
+movl %eax, %r9d         # Initialize previous_diff with first difference
 
 checkSeries_Diff_HW1:
     cmpl %ecx, %r8d
     jge end_checkSeries_Diff_HW1
 
-    movl (%rdi, %r8d, 4), %edx   # Load series[i] into %edx
-    movl -4(%rdi, %r8d, 4), %ebx # Load series[i-1] into %ebx
-    subl %ebx, %edx              # Calculate current_diff = series[i] - series[i-1]
+    movl (%rdi,%r8d,4), %edx   # Load series[i] into %edx (corrected addressing mode)
+    movl -4(%rdi,%r8d,4), %ebx # Load series[i-1] into %ebx (corrected addressing mode)
+    subl %ebx, %edx            # Calculate current_diff = series[i] - series[i-1]
 
     cmpl %r9d, %edx
     jne not_arithmeticDiff_HW1
 
-    movl %ebx, %eax              # Load series[i-1] into %eax for geometric check
+    movl %ebx, %eax            # Load series[i-1] into %eax for geometric check
     testl %eax, %eax
     je skip_geometriCheckDiff_HW1
 
-    movl (%rdi, %r8d, 4), %ebx   # Load series[i] into %ebx for geometric check
-    cdq                           # Sign extend %eax to %edx:%eax for division
-    idivl %ebx                    # Divide %edx:%eax by %ebx
+    movl (%rdi,%r8d,4), %ebx   # Load series[i] into %ebx for geometric check
+    cdq                         # Sign extend %eax to %edx:%eax for division
+    idivl %ebx                  # Divide %edx:%eax by %ebx
     cmpl %ebx, %eax
     jne not_geometricDiff_HW1
     jmp continueCheck_Diff_HW1
@@ -97,10 +97,10 @@ checkSeries_Ratio_HW1:
     cmpl %ecx, %r8d           # Compare loop counter with size
     jge end_checkSeries_Ratio_HW1  # Exit loop if i >= size
 
-    movl (%rdi, %r8d, 4), %ebx   # Load series[i] into %ebx
+    movl (%rdi,%r8d,4), %ebx   # Load series[i] into %ebx (corrected addressing mode)
     idivl %ebx                   # Divide %edx:%eax by %ebx to get the ratio
     movl %eax, %edx              # Save the ratio in %edx
-    movl (%rdi, %r8d, 4), %eax   # Load series[i] into %eax for the next iteration
+    movl (%rdi,%r8d,4), %eax   # Load series[i] into %eax for the next iteration
 
     testl %r8d, %r8d            # Check if i is zero (for arithmetic series)
     jz skip_arithmeticRatioCheck_HW1
@@ -114,7 +114,7 @@ skip_arithmeticRatioCheck_HW1:
 not_arithmeticRatio_HW1:
     movl $0, %esi                # flag_arithmetic = 0
 
-    movl (%rdi, %r8d, 4), %ebx   # Load series[i] into %ebx for geometric check
+    movl (%rdi,%r8d,4), %ebx   # Load series[i] into %ebx for geometric check
     testl %ebx, %ebx
     je skip_geometricRatioCheck_HW1
 
