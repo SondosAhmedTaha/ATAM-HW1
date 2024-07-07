@@ -2,7 +2,7 @@
 _start:
     # Initialize node and leaf counters
     movq $0, %rax       # Node counter
-    movq $0, %rcx # Leaf counter
+    movq $0, %rcx       # Leaf counter
 
     # Set root node address
     mov $root, %rdi
@@ -50,10 +50,10 @@ loop5_HW1:
 height6_HW1:
     inc %rax             # Increment node counter
     inc %rcx             # Increment leaf counter
-    addq $8, %r12        # Move to next sibling
+    lea 8(%r12), %r12    # Move to next sibling
 
 sibling5_HW1:
-    addq $8, %r11
+    lea 8(%r11), %r11
     jmp loop5_HW1
 
 Is_leaf1_HW1:
@@ -63,7 +63,7 @@ Is_leaf1_HW1:
     jmp Scan_Done_HW1
 
 sibling1_HW1:
-    addq $8, %rdi
+    lea 8(%rdi), %rdi
     jmp loop1_HW1
 
 Is_leaf2_HW1:
@@ -73,7 +73,7 @@ Is_leaf2_HW1:
     jmp sibling1_HW1
 
 sibling2_HW1:
-    addq $8, %r8
+    lea 8(%r8), %r8
     jmp loop2_HW1
 
 Is_leaf3_HW1:
@@ -83,7 +83,7 @@ Is_leaf3_HW1:
     jmp sibling2_HW1
 
 sibling3_HW1:
-    addq $8, %r9
+    lea 8(%r9), %r9
     jmp loop3_HW1
 
 Is_leaf4_HW1:
@@ -93,7 +93,7 @@ Is_leaf4_HW1:
     jmp sibling3_HW1
 
 sibling4_HW1:
-    addq $8, %r10
+    lea 8(%r10), %r10
     jmp loop4_HW1
 
 Is_leaf5_HW1:
