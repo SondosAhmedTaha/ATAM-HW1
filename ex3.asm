@@ -1,5 +1,8 @@
+.global _start
+
 .section .text
 _start:
+#your code here
     # Initialize node and leaf counters
     movq $0, %rax       # Node counter
     movq $0, %rcx       # Leaf counter
