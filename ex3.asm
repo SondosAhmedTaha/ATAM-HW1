@@ -1,8 +1,8 @@
 .section .text
 _start:
     # Initialize node and leaf counters
-    xor %rax, %rax       # Node counter
-    xor %rcx, %rcx       # Leaf counter
+    movq $0, %rax       # Node counter
+    movq $0, %rcx # Leaf counter
 
     # Set root node address
     mov $root, %rdi
