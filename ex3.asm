@@ -91,7 +91,7 @@ sibling3_HW1:
 
 Is_leaf4_HW1:
     cmpq (%r9), %r10
-    jne sibling4_HW1
+    jne sibling2_HW1
     inc %rcx             # Increment leaf counter
     jmp sibling3_HW1
 
@@ -101,7 +101,7 @@ sibling4_HW1:
 
 Is_leaf5_HW1:
     cmpq (%r10), %r11
-    jne sibling5_HW1
+    jne sibling3_HW1
     inc %rcx             # Increment leaf counter
     jmp sibling4_HW1
 
