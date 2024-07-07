@@ -1,105 +1,102 @@
 .section .text
 _start:
-    xor %rax, %rax       # Clear rax (node counter)
-    xor %rcx, %rcx       # Clear rcx (leaf counter)
-
-    movq root(%rip), %rdi
+    xor %rax, %rax       # node counter
+    xor %rcx, %rcx       # leaf counter
+    movq $root, %rdi
     cmpq $0, (%rdi)
     je Not_Rich_HW1
 
 height1_HW1:
-    addq $1, %rax
+    inc %rax
     cmpq $0, (%rdi)
-    jne height1_loop_HW1
-    addq $1, %rcx
-    jmp traverse_complete_HW1
+    jne loop1_HW1
+    inc %rcx
+    jmp Scan_Done_HW1
 
-height1_loop_HW1:
-    movq (%rdi), %r8
-    cmpq $0, %r8
-    je Is_leaf1_HW1
-    addq $1, %rax
-
-height2_loop_HW1:
-    movq (%r8), %r9
+loop1_HW1:
+    movq (%rdi), %r9
     cmpq $0, %r9
-    je Is_leaf2_HW1
-    addq $1, %rax
+    je Is_leaf1_HW1
+    inc %rax
 
-height3_loop_HW1:
+loop2_HW1:
     movq (%r9), %r10
     cmpq $0, %r10
-    je Is_leaf3_HW1
-    addq $1, %rax
+    je Is_leaf2_HW1
+    inc %rax
 
-height4_loop_HW1:
+loop3_HW1:
     movq (%r10), %r11
     cmpq $0, %r11
-    je Is_leaf4_HW1
-    addq $1, %rax
+    je Is_leaf3_HW1
+    inc %rax
 
-height5_loop_HW1:
+loop4_HW1:
     movq (%r11), %r12
     cmpq $0, %r12
+    je Is_leaf4_HW1
+    inc %rax
+
+loop5_HW1:
+    movq (%r12), %r13
+    cmpq $0, %r13
     je Is_leaf5_HW1
-    addq $1, %rax
+    inc %rax
 
 height6_HW1:
-    addq $1, %rax
-    addq $1, %rcx
+    inc %rax
+    inc %rcx
+    addq $8, %r13
+
+sibling5_HW1:
     addq $8, %r12
-
-height5_next_HW1:
-    addq $8, %r11
-    jmp height5_loop_HW1
-
-height4_next_HW1:
-    addq $8, %r10
-    jmp height4_loop_HW1
-
-height3_next_HW1:
-    addq $8, %r9
-    jmp height3_loop_HW1
-
-height2_next_HW1:
-    addq $8, %r8
-    jmp height2_loop_HW1
-
-height1_next_HW1:
-    addq $8, %rdi
-    jmp height1_loop_HW1
+    jmp loop5_HW1
 
 Is_leaf1_HW1:
     cmpq (root), %rdi
-    jne traverse_complete_HW1
-    addq $1, %rcx
-    jmp traverse_complete_HW1
+    jne Scan_Done_HW1
+    inc %rcx
+    jmp Scan_Done_HW1
+
+sibling1_HW1:
+    addq $8, %rdi
+    jmp loop1_HW1
 
 Is_leaf2_HW1:
-    cmpq (%rdi), %r8
-    jne height1_next_HW1
-    addq $1, %rcx
-    jmp height1_next_HW1
+    cmpq (%rdi), %r9
+    jne sibling1_HW1
+    inc %rcx
+    jmp sibling1_HW1
+sibling2_HW1:
+    addq $8, %r9
+    jmp loop2_HW1
 
 Is_leaf3_HW1:
-    cmpq (%r8), %r9
-    jne height2_next_HW1
-    addq $1, %rcx
-    jmp height2_next_HW1 
+    cmpq (%r9), %r10
+    jne sibling2_HW1
+    inc %rcx
+    jmp sibling2_HW1 
+sibling3_HW1:
+    addq $8, %r10
+    jmp loop3_HW1
+
 
 Is_leaf4_HW1:
-    cmpq (%r9), %r10
-    jne height2_next_HW1
-    addq $1, %rcx
-    jmp height3_next_HW1
+    cmpq (%r10), %r11
+    jne sibling2_HW1
+    inc %rcx
+    jmp sibling3_HW1
+sibling4_HW1:
+    addq $8, %r11
+    jmp loop4_HW1
 
 Is_leaf5_HW1:
-    cmpq (%r10), %r11
-    jne height2_next_HW1
-    addq $1, %rcx
-    jmp height4_next_HW1
+    cmpq (%r11), %r12
+    jne sibling2_HW1
+    inc %rcx
+    jmp sibling4_HW1
 
-traverse_complete_HW1:
+Scan_Done_HW1:
     test %rcx, %rcx      # Check if there are any leaves
     jz Not_Rich_HW1      # If no leaves, tree is not rich
 
