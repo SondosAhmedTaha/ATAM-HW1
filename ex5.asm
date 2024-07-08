@@ -30,8 +30,9 @@ continue3_DiffX2_HW1:
     je continue1_DiffX2_HW1      # Jump to continue1_DiffX2_HW1 if equal
 
     movl %edx, %r10d             # Store current difference in %r10d
+    movl %r10d,%r13d
     subl %r9d, %r10d             # Calculate difference of differences
-    movl %edx, %r9d             # Update previous difference
+    movl %r13d, %r9d             # Update previous difference
 
     cmp $2, %rdi                 # Compare %rdi with 2
     jne continue2_DiffX2_HW1     # Jump to continue2_DiffX2_HW1 if not equal
