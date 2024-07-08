@@ -20,9 +20,10 @@ checkSeries_DiffX2_HW1:
 
     addq $1, %r8                 # Increment loop counter
     cmp %r8d, %eax               # Compare loop counter with size
-    je seconddegree_HW1          # Jump to seconddegree_HW1 if equal
-
-    movl 0(%r14,%r8,4), %edx     # Load next element of series into %edx
+    jne continue3_DiffX2_HW1
+    jmp seconddegree_HW1          # Jump to seconddegree_HW1 if equal
+continue3_DiffX2_HW1:
+    movl 0(%r14,%rdi,4), %edx     # Load next element of series into %edx
     subl %ebx, %edx              # Calculate difference between current and next elements
 
     cmp $1, %rdi                 # Compare %rdi with 1
@@ -30,13 +31,12 @@ checkSeries_DiffX2_HW1:
 
     movl %edx, %r10d             # Store current difference in %r10d
     subl %r9d, %r10d             # Calculate difference of differences
-    movl %r10d, %r11d            # Store the result in %r11d
-    movl %r11d, %r9d             # Update previous difference
+    movl %edx, %r9d             # Update previous difference
 
     cmp $2, %rdi                 # Compare %rdi with 2
     jne continue2_DiffX2_HW1     # Jump to continue2_DiffX2_HW1 if not equal
     movl %r10d, %r12d           # Store current difference of differences in %r12d
-
+    jmp checkSeries_DiffX2_HW1
 continue2_DiffX2_HW1:
     cmp %r10d, %r12d             # Compare current difference of differences with stored value
     jne checkSeries_DiffXRatio_HW1   # Jump to checkSeries_DiffXRatio_HW1 if not equal
@@ -54,7 +54,9 @@ Loop_DiffXRatio_HW1:
 
     addq $1, %r8
     cmp %r8d , %esi
-    je seconddegree_HW1
+    jne continue3_DiffXRatio_HW1
+    jmp seconddegree_HW1
+continue3_DiffXRatio_HW1:
     movl 0(%r14,%rdi,4) ,%edx
     subl %ebx ,%edx
 ## maybe should check if edx is not zero
@@ -62,11 +64,13 @@ Loop_DiffXRatio_HW1:
     je continue1_DiffXRatio_HW1
     testl %edx, %edx
     je checkSeries_RatioXRatio_HW1
-
+    movl %ebx, %eax
+    movl %edx, %ebx
     movl %edx, %eax
     cdq
     idivl %r9d #we can assume that there is no remainder
-    movl %edx, %r9d
+
+    movl %ebx, %r9d
          
     cmp $2, %rdi 
     jne  continue2_DiffXRatio_HW1
@@ -74,9 +78,11 @@ Loop_DiffXRatio_HW1:
     jmp Loop_DiffXRatio_HW1
 continue2_DiffXRatio_HW1:
     cmp %eax, %r12d
-    je checkSeries_DiffXRatio_HW1
+    je Loop_DiffXRatio_HW1
     jmp checkSeries_RatioXRatio_HW1
 continue1_DiffXRatio_HW1:
+     testl %edx, %edx
+    je checkSeries_RatioXRatio_HW1
     movl %edx, %r9d
     jmp Loop_DiffXRatio_HW1 
 #######################################################################################
@@ -143,10 +149,9 @@ continue3_RatioXDiff_HW1:
     
     cmp $1, %rdi
     je continue1_RatioXDiff_HW1
-    movl %r9d, %r14d
     movl %eax, %r10d
+    sub %r9d, %r10d
     movl %eax, %r9d
-    sub %r14d, %r10d
     
     cmp $2, %rdi 
     jne  continue2_RatioXDiff_HW1
