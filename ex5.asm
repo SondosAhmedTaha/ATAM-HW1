@@ -35,7 +35,7 @@ checkSeries_DiffX2_HW1:
 
     cmp $2, %rdi                 # Compare %rdi with 2
     jne continue2_DiffX2_HW1     # Jump to continue2_DiffX2_HW1 if not equal
-    movl %r10d, %r12dd           # Store current difference of differences in %r12d
+    movl %r10d, %r12d           # Store current difference of differences in %r12d
 
 continue2_DiffX2_HW1:
     cmp %r10d, %r12d             # Compare current difference of differences with stored value
@@ -48,33 +48,37 @@ continue1_DiffX2_HW1:
 #######################################################################################
 checkSeries_DiffXRatio_HW1:
     movl $0, %r8d 
+    movl size, %esi
 Loop_DiffXRatio_HW1:
     movl 0(%r14,%rdi,4) ,%ebx
 
     addq $1, %r8
-    cmp %r8d , %eax
+    cmp %r8d , %esi
     je seconddegree_HW1
     movl 0(%r14,%rdi,4) ,%edx
     subl %ebx ,%edx
 ## maybe should check if edx is not zero
     cmp $1, %rdi
     je continue1_DiffXRatio_HW1
-    movl %edx, %r10d        
-    sub %r9d, %r10d           
-    movl %r10d, %r11d          
-    movl %r11d, %r9d          
+    testl %edx, %edx
+    je checkSeries_RatioXRatio_HW1
 
+    movl %edx, %eax
+    cdq
+    idivl %r9d #we can assume that there is no remainder
+    movl %edx, %r9d
+         
     cmp $2, %rdi 
-    jne  continue2_DiffX2_HW1
-    movl %r10d, %r12dd
-  
-continue2_DiffX2_HW1:
-    cmp %r10d, %r12d
-    jne checkSeries_DiffXRatio_HW1
-    jmp checkSeries_DiffX2_HW1
+    jne  continue2_DiffXRatio_HW1
+    movl %eax, %r12d
+    jmp Loop_DiffXRatio_HW1
+continue2_DiffXRatio_HW1:
+    cmp %eax, %r12d
+    je checkSeries_DiffXRatio_HW1
+    jmp checkSeries_RatioXRatio_HW1
 continue1_DiffXRatio_HW1:
     movl %edx, %r9d
-    jmp Loop_DiffXRatio_HW 
+    jmp Loop_DiffXRatio_HW1 
 #######################################################################################
 checkSeries_RatioXRatio_HW1:
     movl $0, %r8d 
