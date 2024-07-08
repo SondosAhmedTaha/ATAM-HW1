@@ -140,53 +140,46 @@ continue1_RatioXRatio_HW1:
 
 #######################################################################################
 checkSeries_RatioXDiff_HW1:
-    movl $0, %r8d            ; Initialize loop counter r8d to 0
+    movl $0, %r8d            # Initialize loop counter r8d to 0
 Loop_RatioXDiff_HW1:
-    movl 0(%r14,%rdi,4), %ebx ; Load current element of series into %ebx
-    cmpl $0, %ebx            ; Compare %ebx with 0 (check for zero element)
-    je Not_seconddegree_HW1  ; Jump to Not_seconddegree_HW1 if zero element found
+    movl 0(%r14,%rdi,4), %ebx # Load current element of series into %ebx
+    cmpl $0, %ebx            # Compare %ebx with 0 (check for zero element)
+    je Not_seconddegree_HW1  # Jump to Not_seconddegree_HW1 if zero element found
 
-    addq $1, %r8             ; Increment loop counter
-    cmp %r8d, %esi           ; Compare loop counter with size (esi)
-    jne continue3_RatioXDiff_HW1 ; Jump to continue3_RatioXDiff_HW1 if not at end of series
-    jmp seconddegree_HW1     ; Jump to seconddegree_HW1 if end of series reached
+    addq $1, %r8             #Increment loop counter
+    cmp %r8d, %esi           # Compare loop counter with size (esi)
+    jne continue3_RatioXDiff_HW1 # Jump to continue3_RatioXDiff_HW1 if not at end of series
+    jmp seconddegree_HW1     # Jump to seconddegree_HW1 if end of series reached
 
 continue3_RatioXDiff_HW1:
-    movl 0(%r14,%rdi,4), %eax ; Load next element of series into %eax
-    cmpl $0, %eax            ; Compare %eax with 0 (check for zero element)
-    je Not_seconddegree_HW1  ; Jump to Not_seconddegree_HW1 if zero element found
-    cdq                       ; Sign-extend %eax into %edx:%eax
-    idivl %ebx               ; Divide %edx:%eax by %ebx (calculate quotient in %eax, remainder in %edx)
-    cmpl $0, %edx            ; Compare remainder with 0
-    jne Not_seconddegree_HW1  ; Jump to Not_seconddegree_HW1 if remainder is not zero
+    movl 0(%r14,%rdi,4), %eax # Load next element of series into %eax
+    cmpl $0, %eax            # Compare %eax with 0 (check for zero element)
+    je Not_seconddegree_HW1  # Jump to Not_seconddegree_HW1 if zero element found
+    cdq                       # Sign-extend %eax into %edx:%eax
+    idivl %ebx               # Divide %edx:%eax by %ebx (calculate quotient in %eax, remainder in %edx)
+    cmpl $0, %edx            # Compare remainder with 0
+    jne Not_seconddegree_HW1  # Jump to Not_seconddegree_HW1 if remainder is not zero
 
-    cmp $1, %rdi             ; Compare %rdi with 1 (check if first element)
-    je continue1_RatioXDiff_HW1 ; Jump to continue1_RatioXDiff_HW1 if first element
+    cmp $1, %rdi             #Compare %rdi with 1 (check if first element)
+    je continue1_RatioXDiff_HW1 # Jump to continue1_RatioXDiff_HW1 if first element
 
-    movl %eax, %r10d         ; Store quotient in %r10d
-    sub %r9d, %r10d          ; Subtract previous quotient from current quotient
-    movl %eax, %r9d          ; Update previous quotient
+    movl %eax, %r10d         # Store quotient in %r10d
+    sub %r9d, %r10d          # Subtract previous quotient from current quotient
+    movl %eax, %r9d          # Update previous quotient
 
-    cmp $2, %rdi             ; Compare %rdi with 2 (check if second element)
-    jne continue2_RatioXDiff_HW1 ; Jump to continue2_RatioXDiff_HW1 if not second element
-    movl %r10d, %r12d        ; Store current quotient difference in %r12d
-    jmp Loop_RatioXDiff_HW1  ; Jump back to Loop_RatioXDiff_HW1
+    cmp $2, %rdi             # Compare %rdi with 2 (check if second element)
+    jne continue2_RatioXDiff_HW1 # Jump to continue2_RatioXDiff_HW1 if not second element
+    movl %r10d, %r12d        # Store current quotient difference in %r12d
+    jmp Loop_RatioXDiff_HW1  # Jump back to Loop_RatioXDiff_HW1
 
 continue2_RatioXDiff_HW1:
-    cmp %r10d, %r12d         ; Compare current quotient difference with stored value
-    je Loop_RatioXDiff_HW1   ; Jump back to Loop_RatioXDiff_HW1 if they are equal
-    jmp Not_seconddegree_HW1 ; Jump to Not_seconddegree_HW1 if they are not equal
+    cmp %r10d, %r12d         # Compare current quotient difference with stored value
+    je Loop_RatioXDiff_HW1   # Jump back to Loop_RatioXDiff_HW1 if they are equal
+    jmp Not_seconddegree_HW1 # Jump to Not_seconddegree_HW1 if they are not equal
 
 continue1_RatioXDiff_HW1:
-    movl %eax, %r9d          ; Update previous quotient with current quotient
-    jmp Loop_RatioXDiff_HW1  ; Jump back to Loop_RatioXDiff_HW1
-
-Not_seconddegree_HW1:
-    ; Handle case where second degree condition is not met
-    ; (This section of code would typically reset flags or perform cleanup)
-
-    ; End of the code section
-
+    movl %eax, %r9d          # Update previous quotient with current quotient
+    jmp Loop_RatioXDiff_HW1  # Jump back to Loop_RatioXDiff_HW1
 
 Not_seconddegree_HW1:
     movb $0, seconddegree        # Set seconddegree to 0
