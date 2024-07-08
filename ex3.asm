@@ -2,7 +2,6 @@
 
 .section .text
 _start:
-#your code here
     # Initialize node and leaf counters
     movq $0, %rax       # Node counter
     movq $0, %rcx       # Leaf counter
@@ -10,9 +9,9 @@ _start:
     # Set root node address
     mov $root, %rdi
     cmpq $0, (%rdi)
-    je Not_Rich_HW1
+    je Root_Only
 
-# Traverse and count nodes and leaves
+    # Start traversal
 height1_HW1:
     inc %rax             # Increment node counter
     cmpq $0, (%rdi)
@@ -50,14 +49,15 @@ loop5_HW1:
     je Is_leaf5_HW1
     inc %rax             # Increment node counter
 
-height6_HW1:
+loop6_HW1:
+    movq (%r12), %r13
+    testq %r13, %r13
+    je Is_leaf6_HW1
     inc %rax             # Increment node counter
-    inc %rcx             # Increment leaf counter
-    lea 8(%r12), %r12    # Move to next sibling
 
-sibling5_HW1:
-    lea 8(%r11), %r11
-    jmp loop5_HW1
+sibling6_HW1:
+    lea 8(%r12), %r12    # Move to next sibling
+    jmp loop6_HW1
 
 Is_leaf1_HW1:
     cmpq $root, %rdi
@@ -91,7 +91,7 @@ sibling3_HW1:
 
 Is_leaf4_HW1:
     cmpq (%r9), %r10
-    jne sibling2_HW1
+    jne sibling3_HW1
     inc %rcx             # Increment leaf counter
     jmp sibling3_HW1
 
@@ -101,9 +101,19 @@ sibling4_HW1:
 
 Is_leaf5_HW1:
     cmpq (%r10), %r11
-    jne sibling3_HW1
+    jne sibling4_HW1
     inc %rcx             # Increment leaf counter
     jmp sibling4_HW1
+
+sibling5_HW1:
+    lea 8(%r11), %r11
+    jmp loop5_HW1
+
+Is_leaf6_HW1:
+    cmpq (%r11), %r12
+    jne sibling5_HW1
+    inc %rcx             # Increment leaf counter
+    jmp sibling5_HW1
 
 Scan_Done_HW1:
     test %rcx, %rcx      # Check if there are any leaves
@@ -111,6 +121,7 @@ Scan_Done_HW1:
 
     # Calculate and compare node-to-leaf ratio
     xor %rdx, %rdx       # Clear rdx for division
+    movq %rax, %rbx      # Move total nodes to rbx
     div %rcx             # Divide total nodes by total leaves
     cmp $3, %rax         # Compare the quotient with 3
     jg Not_Rich_HW1      # If quotient > 3, not rich
@@ -118,16 +129,20 @@ Scan_Done_HW1:
     jmp Rich_HW1         # Else, rich
 
 Not_Rich_HW1:
-    movb $0, rich        # Set rich to 0
+    movq $0, rich(%rip)  # Set rich to 0
     jmp End_HW1
 
 Rich_HW1:
-    movb $1, rich        # Set rich to 1
+    movq $1, rich(%rip)  # Set rich to 1
     jmp End_HW1
 
 Equal_Rich_HW1:
     test %rdx, %rdx      # Check if remainder is 0
     je Rich_HW1          # If 0, rich
     jmp Not_Rich_HW1     # Else, not rich
+
+Root_Only:
+    movq $1, rich(%rip)  # If only root node, set rich to 1
+    jmp End_HW1
 
 End_HW1:
