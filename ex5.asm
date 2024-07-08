@@ -7,7 +7,7 @@ _start:
     jz Not_seconddegree_HW1 # Jump to Not_seconddegree_HW1 if size is zero
     js Not_seconddegree_HW1 # Jump to Not_seconddegree_HW1 if size is negative
     cmp $2, %eax            # Compare size with 2
-    jl end_HW1              # Jump to end_HW1 if size < 2 (i.e., size <= 1)
+    jl End_HW1              # Jump to end_HW1 if size < 2 (i.e., size <= 1)
 
     mov $series, %r14       # Load address of series into %r14
     testq %r14, %r14        # Test if series address is zero
@@ -18,7 +18,7 @@ _start:
 checkSeries_DiffX2_HW1:
     movl 0(%r14,%rdi,4), %ebx   # Load current element of series into %ebx
 
-    addq $1, %r8                 # Increment loop counter
+    addl $1, %r8d                 # Increment loop counter
     cmp %r8d, %eax               # Compare loop counter with size
     jne continue3_DiffX2_HW1
     jmp seconddegree_HW1          # Jump to seconddegree_HW1 if equal
@@ -53,7 +53,7 @@ checkSeries_DiffXRatio_HW1:
 Loop_DiffXRatio_HW1:
     movl 0(%r14,%rdi,4), %ebx  # Load current element of series into %ebx
 
-    addq $1, %r8             # Increment loop counter
+   addl $1, %r8d             # Increment loop counter
     cmp %r8d , %esi          # Compare loop counter with size
     jne continue3_DiffXRatio_HW1 # Jump if not equal, continue loop
     jmp seconddegree_HW1     # Jump to seconddegree_HW1 if equal
@@ -99,7 +99,7 @@ Loop_RatioXRatio_HW1:
     cmpl $0, %ebx             # Compare ebx to 0
     je checkSeries_RatioXDiff_HW1  # If ebx is 0, jump to checkSeries_RatioXDiff_HW1
 
-    addq $1, %r8              # Increment loop counter r8
+   addl $1, %r8d              # Increment loop counter r8
     cmp %r8d, %esi            # Compare loop counter r8d with size esi
     jne continue3_RatioXRatio_HW1  # If not equal, jump to continue3_RatioXRatio_HW1
     jmp seconddegree_HW1      # Otherwise, jump to seconddegree_HW1
@@ -146,7 +146,7 @@ Loop_RatioXDiff_HW1:
     cmpl $0, %ebx            # Compare %ebx with 0 (check for zero element)
     je Not_seconddegree_HW1  # Jump to Not_seconddegree_HW1 if zero element found
 
-    addq $1, %r8             #Increment loop counter
+   addl $1, %r8d             #Increment loop counter
     cmp %r8d, %esi           # Compare loop counter with size (esi)
     jne continue3_RatioXDiff_HW1 # Jump to continue3_RatioXDiff_HW1 if not at end of series
     jmp seconddegree_HW1     # Jump to seconddegree_HW1 if end of series reached
