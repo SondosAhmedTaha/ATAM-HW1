@@ -83,6 +83,43 @@ continue1_DiffXRatio_HW1:
 checkSeries_RatioXRatio_HW1:
     movl $0, %r8d 
 Loop_RatioXRatio_HW1:
+    movl 0(%r14,%rdi,4) ,%ebx
+    cmpl $0, %ebx
+    je checkSeries_DiffXDiff_HW1
+    addq $1, %r8
+    cmp %r8d , %esi
+    je seconddegree_HW1
+    movl 0(%r14,%rdi,4) ,%eax
+    cmpl $0, %eax
+    je checkSeries_DiffXDiff_HW1
+    cdq
+    idivl %ebx
+    cmpl $0 , %edx
+    je checkSeries_DiffXDiff_HW1
+    
+    cmp $1, %rdi
+    je continue1_RatioXRatio_HW1
+    testl %edx, %edx
+    je checkSeries_RatioXRatio_HW1
+
+    movl %eax, %r10d
+    cdq
+    idivl %r9d #we can assume that there is no remainder
+    cmpl $0 , %edx
+    je checkSeries_DiffXDiff_HW1
+    movl %r10d, %r13d
+
+    cmp $2, %rdi 
+    jne  continue2_DiffXRatio_HW1
+    movl %eax, %r12d
+    jmp Loop_RatioXRatio_HW1
+continue2_DiffXRatio_HW1:
+    cmp %eax, %r12d
+    je Loop_RatioXRatio_HW1
+    jmp checkSeries_DiffXDiff_HW1
+continue1_RatioXRatio_HW1:
+    movl %eax, %r9d
+    jmp Loop_RatioXRatio_HW1 
 #######################################################################################
 checkSeries_DiffXDiff_HW1:
     movl $0, %r8d 
